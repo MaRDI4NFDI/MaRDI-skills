@@ -1,0 +1,20 @@
+{
+    "name": "mardi-skills",
+    "owner": {
+        "name": "MaRDI"
+    },
+    "metadata": {
+        "description": "Claude Skills for the Mathematical Research Data Initiative (MaRDI).",
+        "version": "0.0.0-9000"
+    },
+    "plugins": [
+        {
+            "name": "mardi-platforms-skills",
+            "description": "Skills for working with MaRDI data sources, including the MaRDI knowledge graph.",
+            "source": "./",
+            "skills": [
+                "./skills/platforms/mardi-kg-query"
+            ]
+        }
+    ]
+}
