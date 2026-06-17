@@ -121,7 +121,28 @@ mardi-doip-cli --action update --object-id <workflow-QID> \
 
 ---
 
-## 3. Type FDO lookup before UPDATE
+## 3. Formatting P1459 (description_long) for portal rendering
+
+P1459 values are rendered on the MaRDI portal via a `markdownToMediawiki` Lua function. Use the following conventions to produce well-structured output:
+
+| Element | Syntax | Notes |
+|---|---|---|
+| Paragraph break | `\N\N` | Use between paragraphs and around headings |
+| Line break | `\N` | Single newline — use between list items |
+| Bold | `**text**` | Use for tool/library/step names |
+| Section heading | `### Heading` | Level 3 (small) — surround with `\N\N` on both sides |
+| Link | `[text](url)` | Renders as MediaWiki external link |
+
+⚠️ Backticks (`` `code` ``) are **not** converted — avoid them; use `**bold**` for inline tool names instead.
+
+**Example** (as stored in P1459):
+```
+A **Snakemake** workflow that reproduces the results of Doe et al. (2024).\N\NAll dependencies are pinned in a conda environment file.\N\N### Main steps\N\N**step_one** — fetches input data from the MaRDI data store.\N\N**step_two** — runs the analysis script and renders the output figure.
+```
+
+---
+
+## 4. Type FDO lookup before UPDATE
 
 **Why**: The UPDATE handler expects bare Wikibase P-IDs as property keys (e.g. `{"P28": "2024-01-15"}`), not Schema.org names. Retrieve the type FDO first to get the correct P-IDs.
 
