@@ -45,7 +45,23 @@ mardi-doip-cli --action create \
 
 Note the returned `qid` — you will need it in subsequent steps.
 
-### Step 2 — Upload the RO-Crate component
+### Step 2 — Link software dependencies (optional)
+
+For each software package or dataset the workflow uses, search the KG and link it via `P557`. Always search without `--type` first to avoid missing items with non-standard profile types.
+
+```bash
+# Search for a package
+mardi-doip-cli --action search --query "NumPy" --limit 5
+
+# Link it to the workflow (P557 is multi-value — include all QIDs together)
+mardi-doip-cli --action update --object-id <new-QID> \
+  --properties '{"claims": {"P557": ["<qid1>", "<qid2>"]}}' \
+  --username DoipBot --password <pw>
+```
+
+If a package is not yet in the KG, create a software item first (see **§ 2. Create a software item**) and then link it.
+
+### Step 3 — Upload the RO-Crate component
 
 ```bash
 mardi-doip-cli --action update \
@@ -56,7 +72,7 @@ mardi-doip-cli --action update \
   --username DoipBot@DoipBot --password <pw>
 ```
 
-### Step 3 — Verify
+### Step 4 — Verify
 
 ```bash
 mardi-doip-cli --action retrieve --object-id <new-QID>
@@ -64,7 +80,7 @@ mardi-doip-cli --action retrieve --object-id <new-QID>
 
 Confirm that `kernel["fdo:hasComponent"]` contains an entry with `"componentId": "rocrate.zip"`.
 
-### Step 4 — Purge cache (optional)
+### Step 5 — Purge cache (optional)
 
 If the item was just created the cache won't have a stale entry, but if you ran a retrieve in between you can force a fresh fetch:
 
