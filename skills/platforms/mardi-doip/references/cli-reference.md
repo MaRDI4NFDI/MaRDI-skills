@@ -119,6 +119,12 @@ mardi-doip-cli --action purge --object-id Q424905
 ```
 Call this after an `update` if you want the next `retrieve` to see the updated data immediately.
 
+**Type cache eviction.** Use the `types/` prefix to evict a type FDO from the DOIP server's in-memory type cache — useful after updating `type_registry.py` in the FDO server without restarting the DOIP pod:
+
+```bash
+mardi-doip-cli --action purge --object-id types/Workflow
+```
+
 ---
 
 ### create
@@ -195,7 +201,7 @@ P-IDs are local to the MaRDI Wikibase and may differ from Wikidata.
 
 ## Key gotchas
 
-1. `purge` = cache eviction only, not deletion. It removes the manifest from the server's in-memory cache — the object and its components are untouched.
+1. `purge` = cache eviction only, not deletion. It removes the manifest (or type FDO when using `types/` prefix) from the server's in-memory cache — the object and its components are untouched.
 2. `--output` for retrieve must be a file path, not a directory. Passing `.` raises `IsADirectoryError`.
 3. UPDATE `--properties` uses the same credential env vars as create. Both fail clearly if credentials are missing.
 4. The `hello` response includes `"describe"` in `availableOperations` — this is a server-internal operation not exposed via the CLI.

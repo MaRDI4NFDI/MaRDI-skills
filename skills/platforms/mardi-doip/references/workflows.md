@@ -34,8 +34,8 @@ mardi-doip-cli --action create \
 |---|---|---|---|---|
 | instance of | P31 | item (QID) | yes | yes — always `["Q68657", "Q6830884"]` |
 | MaRDI profile type | P1460 | item (QID) | no | yes — always `Q6534216` |
-| creator | P16 | item (QID) | yes | one of P16/P43 |
-| author name string | P43 | string | yes | one of P16/P43 |
+| author | P16 | item (QID) | yes | one of P16/P43 |
+| author name string | P43 | string | no | one of P16/P43 |
 | datePublished | P28 | time (ISO 8601) | no | no |
 | license | P163 | item (QID) | yes | no |
 | citation | P286 | item (QID) | yes | no |
