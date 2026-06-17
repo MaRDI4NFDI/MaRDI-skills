@@ -139,16 +139,7 @@ mardi-doip-cli --action create \
 ```
 - `label` — required
 - `description` — optional
-- `claims` — map of bare P-IDs (`P<number>`) to values. Item → QID string; string/external-id → plain string.
-
-**Typed format** (`WORKFLOW` schema — server resolves instance-of claims automatically):
-```bash
-mardi-doip-cli --action create \
-  --json '{"type": "WORKFLOW", "fields": {"name": "Reproduce results from: ...", "problem_statement": "..."}}' \
-  --username User@BotName --password <pw>
-```
-Required `fields` for `WORKFLOW`: `name`, `problem_statement`.
-Optional: `uses` (QID), `author` (QID), `publication_date` (ISO string), `copyright_license` (QID), `cites_work` (QID), `fdo_component_id` (e.g. `rocrate.zip`), `stored_at` (QID, defaults to MaRDI data store `Q6830870`).
+- `claims` — map of bare P-IDs (`P<number>`) to values. Item → QID string; string/external-id → plain string; multi-value → JSON array (e.g. `"P31": ["Q68657", "Q6830884"]`).
 
 Response:
 ```json
