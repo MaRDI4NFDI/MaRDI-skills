@@ -22,7 +22,7 @@ mardi-doip-cli --action create \
       "P286": "<citation-QID>",
       "P557": "<uses-QID>",
       "P227": "<zenodo-id>",
-      "P1961": "Long description of the workflow."
+      "P1459": "Long description of the workflow."
     }
   }' \
   --username DoipBot@DoipBot --password <pw>
@@ -41,7 +41,7 @@ mardi-doip-cli --action create \
 | citation | P286 | item (QID) | yes | no |
 | uses | P557 | item (QID) | yes | no |
 | zenodoId | P227 | string | no | no |
-| description_long | P1961 | string | no | no |
+| description_long | P1459 | string | no | no |
 
 Note the returned `qid` — you will need it in subsequent steps.
 
