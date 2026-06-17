@@ -166,6 +166,8 @@ At least one of `--query` or `--type` is required.
 
 Known type names: `workflow`, `dataset`, `person`, `publication`, `software`, `model`, `algorithm` (and more — check `doip_shared/constants.py` `MARDI_PROFILE_TYPES`).
 
+⚠️ `--type` filtering matches against a specific profile type QID. Items created with a different or missing `P1460` value will not appear. If a search with `--type` returns no results, retry without `--type` to do a fulltext search across all item types.
+
 Each result has: `qid`, `title`, `snippet`, `timestamp`.
 
 ---
