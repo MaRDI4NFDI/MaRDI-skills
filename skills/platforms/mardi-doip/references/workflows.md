@@ -74,6 +74,51 @@ mardi-doip-cli --action purge --object-id <new-QID>
 
 ---
 
+## 2. Create a software item
+
+**Goal**: Register a software repository (e.g. a GitHub repo referenced by a workflow) as an item in the MaRDI KG.
+
+```bash
+mardi-doip-cli --action create \
+  --json '{
+    "label": "my-software-repo",
+    "claims": {
+      "P1460": "Q5976450",
+      "P339": "https://github.com/owner/my-software-repo",
+      "P43": "<author name string — use if no MaRDI person QID is known>"
+    }
+  }' \
+  --username DoipBot --password <pw>
+```
+
+`P1460` is **required** to mark the item as a MaRDI software item. `P31` is not set on software items. Full software property reference:
+
+| Field | P-ID | Type | Multi | Required |
+|---|---|---|---|---|
+| MaRDI profile type | P1460 | item (QID) | no | yes — always `Q5976450` |
+| codeRepository | P339 | url | no | no |
+| author name string | P43 | string | no | no |
+| author | P16 | item (QID) | yes | no |
+| license | P163 | item (QID) | yes | no |
+| softwareVersion | P132 | string | no | no |
+| programmingLanguage | P114 | item (QID) | yes | no |
+| softwareHeritageId | P1454 | string | no | no |
+
+To link the new software item to a workflow, update the workflow with `P557`:
+
+```bash
+mardi-doip-cli --action update --object-id <workflow-QID> \
+  --properties '{"claims": {"P557": "<software-QID>"}}' \
+  --username DoipBot --password <pw>
+```
+
+> **Tip**: If the author's real name is unknown, look it up from a GitHub username:
+> ```bash
+> gh api users/<github-login> --jq '.name'
+> ```
+
+---
+
 ## 3. Type FDO lookup before UPDATE
 
 **Why**: The UPDATE handler expects bare Wikibase P-IDs as property keys (e.g. `{"P28": "2024-01-15"}`), not Schema.org names. Retrieve the type FDO first to get the correct P-IDs.
