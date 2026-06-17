@@ -13,7 +13,8 @@
             "description": "Skills for working with MaRDI data sources, including the MaRDI knowledge graph.",
             "source": "./",
             "skills": [
-                "./skills/platforms/mardi-kg-query"
+                "./skills/platforms/mardi-kg-query",
+                "./skills/platforms/mardi-doip"
             ]
         }
     ]
