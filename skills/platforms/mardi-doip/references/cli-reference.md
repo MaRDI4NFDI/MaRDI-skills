@@ -164,7 +164,7 @@ mardi-doip-cli --action search --query "10.1371/JOURNAL.PONE.0306704"
 
 At least one of `--query` or `--type` is required.
 
-Known type names: `workflow`, `dataset`, `person`, `publication`, `software`, `model`, `algorithm` (and more — check `doip_shared/constants.py` `MARDI_PROFILE_TYPES`).
+Known type names: `workflow`, `dataset`, `person`, `publication`, `software`, `model`, `algorithm` (and potentially more).
 
 ⚠️ `--type` filtering matches against a specific profile type QID. Items created with a different or missing `P1460` value will not appear. If a search with `--type` returns no results, retry without `--type` to do a fulltext search across all item types.
 
