@@ -83,6 +83,7 @@ mardi-doip-cli --action create \
   --json '{
     "label": "my-software-repo",
     "claims": {
+      "P31": "Q56614",
       "P1460": "Q5976450",
       "P339": "https://github.com/owner/my-software-repo",
       "P43": "<author name string — use if no MaRDI person QID is known>"
@@ -91,10 +92,11 @@ mardi-doip-cli --action create \
   --username DoipBot --password <pw>
 ```
 
-`P1460` is **required** to mark the item as a MaRDI software item. `P31` is not set on software items. Full software property reference:
+`P31` and `P1460` are **required** to mark the item as a MaRDI software item. Full software property reference:
 
 | Field | P-ID | Type | Multi | Required |
 |---|---|---|---|---|
+| instance of | P31 | item (QID) | no | yes — always `Q56614` |
 | MaRDI profile type | P1460 | item (QID) | no | yes — always `Q5976450` |
 | codeRepository | P339 | url | no | no |
 | author name string | P43 | string | no | no |
