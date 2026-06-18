@@ -8,6 +8,7 @@
 | `--port` | `3567` | Server port |
 | `--no-tls` | off | Disable TLS (use for local dev) |
 | `--secure` | off | Verify TLS certificate (only for non-self-signed certs) |
+| `--no-banner` | off | Suppress banner and all log output; print only raw JSON to stdout |
 
 ---
 
@@ -154,6 +155,7 @@ Response:
 mardi-doip-cli --action search --type workflow --limit 20
 mardi-doip-cli --action search --query "Conrad" --type person
 mardi-doip-cli --action search --query "10.1371/JOURNAL.PONE.0306704"
+mardi-doip-cli --action search --type software --limit 5 --no-banner | jq '.[0].results'
 ```
 
 | Flag | Description |
@@ -166,7 +168,7 @@ At least one of `--query` or `--type` is required.
 
 Known type names: `workflow`, `dataset`, `person`, `publication`, `software`, `model`, `algorithm` (and potentially more).
 
-⚠️ `--type` filtering matches against a specific profile type QID. Items created with a different or missing `P1460` value will not appear. If a search with `--type` returns no results, retry without `--type` to do a fulltext search across all item types.
+⚠️ `--type` filtering uses `haswbfacet` against P1460 or P31 depending on the type. `--type software` is a special case: it issues three queries (P1460=Q5976450 for SoftwareApplication, P31=Q57080 and P31=Q56605 for SoftwareSourceCode) and merges the results. For other types, items with a missing or different P1460 value will not appear — retry without `--type` to do a fulltext search across all item types.
 
 Each result has: `qid`, `title`, `snippet`, `timestamp`.
 

@@ -39,3 +39,4 @@ Wait for the user to confirm before executing. For multi-step workflows, show th
 - Component downloads write to a file; report the path and size when done.
 - Search results: show `qid`, `title`, and `snippet` in a table.
 - On error, quote the error message verbatim and suggest the likely cause (auth failure, wrong QID format, component not found, conflict on update).
+- Use `--no-banner` whenever the output will be piped or parsed — it suppresses the ASCII banner and all log lines so only raw JSON reaches stdout.
