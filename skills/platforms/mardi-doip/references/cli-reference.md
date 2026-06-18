@@ -92,7 +92,12 @@ mardi-doip-cli --action update --object-id Q424905 \
 
 **Conflict guard**: if a property already has values and `do_override` is absent, the server returns a 409 with the existing values. Retrieve current values, merge, then resubmit with `"do_override": true`.
 
-**PID formats accepted**: bare (`P16`), prefixed (`wdt:P16`), or full URL — all normalised server-side to bare form.
+**Qualifier behaviour with `do_override`**:
+- Bare string value (e.g. `"y_n"`) → existing claim is kept as-is, including any existing qualifiers.
+- Object form with qualifiers (e.g. `{"value": "y_n", "qualifiers": {"P984": "Q123"}}`) → existing claim is replaced with a fresh one carrying the new qualifiers.
+- Object form with empty qualifiers (e.g. `{"value": "y_n", "qualifiers": {}}`) → existing claim is replaced with a qualifier-free claim (explicit qualifier clear).
+
+**PID formats accepted**: bare (`P16`), prefixed (`wdt:P16`), or full URL — all normalised server-side to bare form. This applies to both top-level claim PIDs and qualifier PIDs.
 
 **Component mode** — upload a file:
 ```bash

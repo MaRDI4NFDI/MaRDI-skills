@@ -193,9 +193,29 @@ Full Formula property reference:
 
 Note the returned `qid` — use it to verify and enrich the item.
 
-### Step 2 — Add symbol qualifiers (optional)
+### Step 2 — Update symbol qualifiers on an existing item (optional)
 
-The `create` action does not support claim-level qualifiers. To record what a symbol represents, update after creation using a raw MediaWiki API call or the portal UI. Via the CLI you can only add the bare notation string through P983 — qualifier enrichment requires the portal editor.
+If the formula item already exists without P984 qualifiers and you want to add or replace them, use `update` with `do_override: true`:
+
+```bash
+cat > /tmp/formula_update.json << 'ENDJSON'
+{
+  "claims": {
+    "P983": [
+      {"value": "\\zeta", "qualifiers": {"P984": "<concept-QID>"}},
+      {"value": "s",      "qualifiers": {"P984": "<concept-QID>"}}
+    ]
+  },
+  "do_override": true
+}
+ENDJSON
+
+mardi-doip-cli --action update --object-id <QID> \
+  --properties @/tmp/formula_update.json \
+  --username DoipBot --password <pw>
+```
+
+**Qualifier clearing**: passing `{"value": "...", "qualifiers": {}}` (empty qualifiers dict) with `do_override: true` explicitly removes all qualifiers from that symbol claim. A bare string `"..."` leaves any existing qualifiers untouched.
 
 ### Step 3 — Verify
 
