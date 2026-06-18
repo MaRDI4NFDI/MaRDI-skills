@@ -137,7 +137,73 @@ mardi-doip-cli --action update --object-id <workflow-QID> \
 
 ---
 
-## 3. Formatting P1459 (description_long) for portal rendering
+## 3. Create a formula item
+
+**Goal**: Register a mathematical formula in the MaRDI KG so it gets a Formula FDO.
+
+The trigger is `P1460=Q5981696` — this is what causes the FDO server to route the item to the Formula profile builder. There is no required `P31` value (formula items are inconsistently typed across import sources).
+
+### Step 1 — Create the item
+
+```bash
+mardi-doip-cli --action create \
+  --json '{
+    "label": "Euler product formula",
+    "description": "Representation of the Riemann zeta function as a product over primes",
+    "claims": {
+      "P1460": "Q5981696",
+      "P989": "\\zeta(s) = \\prod_{p \\text{ prime}} \\frac{1}{1-p^{-s}}",
+      "P983": "\\zeta",
+      "P558": "<QID of the person the formula is named after, if any>",
+      "P1495": "<QID of the mathematical community, if any>",
+      "P1459": "Long-form description of the formula and its context.",
+      "P12": "<Wikidata QID, e.g. Q187235>",
+      "P2": "<DLMF equation ID, e.g. 25.2.E2 — only if the formula appears in DLMF>"
+    }
+  }' \
+  --username DoipBot@DoipBot --password <pw>
+```
+
+Full Formula property reference:
+
+| Field | P-ID | Type | Multi | Required | Notes |
+|---|---|---|---|---|---|
+| MaRDI profile type | P1460 | item (QID) | no | **yes** — always `Q5981696` |
+| mathExpression | P989 | math string | no | no | generic defining formula; preferred over P14 |
+| symbol | P983 | math string | yes | no | symbol notation; add P984 qualifier (item QID) to indicate what it represents |
+| definesSymbol | P3 | item (QID) | yes | no | symbols this formula defines |
+| DLMF equation ID | P2 | string | no | no | e.g. `25.2.E2` — only for DLMF-sourced items |
+| Wikidata QID | P12 | string | no | no | e.g. `Q187235` |
+| namedAfter | P558 | item (QID) | yes | no | person the formula is named after |
+| about | P1495 | item (QID) | yes | no | mathematical community or subject area |
+| contains | P1560 | item (QID) | yes | no | sub-formulas; qualifier P560 (item QID) for the role |
+| related URL | P1690 | string (url) | yes | no | external resources (e.g. DLMF page, Wikipedia) |
+| description_long | P1459 | string | no | no | extended description, supports Markdown (see § 4) |
+
+Note the returned `qid` — use it to verify and enrich the item.
+
+### Step 2 — Add symbol qualifiers (optional)
+
+The `create` action does not support claim-level qualifiers. To record what a symbol represents, update after creation using a raw MediaWiki API call or the portal UI. Via the CLI you can only add the bare notation string through P983 — qualifier enrichment requires the portal editor.
+
+### Step 3 — Verify
+
+```bash
+mardi-doip-cli --action retrieve --object-id <new-QID>
+```
+
+Confirm that `kernel["digitalObjectType"]` ends with `/Formula` and that `profile["mathExpression"]` is populated.
+
+### Step 4 — Search
+
+```bash
+mardi-doip-cli --action search --type formula --limit 10
+mardi-doip-cli --action search --query "Euler" --type formula
+```
+
+---
+
+## 4. Formatting P1459 (description_long) for portal rendering
 
 P1459 values are rendered on the MaRDI portal via a `markdownToMediawiki` Lua function. Use the following conventions to produce well-structured output:
 
@@ -158,7 +224,7 @@ A **Snakemake** workflow that reproduces the results of Doe et al. (2024).\N\NAl
 
 ---
 
-## 4. Type FDO lookup before UPDATE
+## 5. Type FDO lookup before UPDATE
 
 **Why**: The UPDATE handler expects bare Wikibase P-IDs as property keys (e.g. `{"P28": "2024-01-15"}`), not Schema.org names. Retrieve the type FDO first to get the correct P-IDs.
 
