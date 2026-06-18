@@ -262,11 +262,11 @@ mardi-doip-cli --action update --object-id <QID> \
 
 ---
 
-## 6. Link formulas to a publication
+## 6. Link mathematical content items to a publication
 
-**Goal**: Record which formulas appear in a paper so the publication FDO lists them under `hasPart`.
+**Goal**: Record which formulas, theorems, proofs, or other mathematical content items appear in a paper so the publication FDO lists them under `hasPart`.
 
-The link goes on the **publication item** (not the formula). P1560 is used — the same property that Model items use to enumerate their formulas.
+The link goes on the **publication item** (not the content item). P1560 is used — the same property that Model items use to enumerate their components. Currently formulas (P1460=Q5981696) are the primary use case, but the same pattern applies to any future content type (theorems, proofs, lemmas, etc.).
 
 ```bash
 # Single formula
@@ -289,10 +289,10 @@ After the update the publication FDO will contain:
 ]
 ```
 
-**Reverse lookup** — find all papers a formula appears in:
+**Reverse lookup** — find all papers a content item appears in:
 
 ```bash
-mardi-doip-cli --action search --type publication --query "<formula-QID>"
+mardi-doip-cli --action search --type publication --query "<item-QID>"
 ```
 
 No qualifier on P1560 is needed (unlike Model → Formula, which uses P560 for roles).
