@@ -57,7 +57,7 @@ mardi-doip-cli --action retrieve --object-id types/ScholarlyArticle
 # or full URI:
 mardi-doip-cli --action retrieve --object-id https://fdo.portal.mardi4nfdi.de/fdo/types/ScholarlyArticle
 ```
-Available type IDs: `ScholarlyArticle`, `Dataset`, `Workflow`, `Person`, `SoftwareApplication`, `SoftwareSourceCode`.
+Available type IDs: `ScholarlyArticle`, `Dataset`, `Workflow`, `Person`, `SoftwareApplication`, `SoftwareSourceCode`, `Formula`.
 Response includes `propertyMappings` — consult this before building an UPDATE payload (maps Schema.org field names → Wikibase P-IDs).
 
 **Download a component**:
@@ -166,7 +166,7 @@ mardi-doip-cli --action search --type software --limit 5 --no-banner | jq '.[0].
 
 At least one of `--query` or `--type` is required.
 
-Known type names: `workflow`, `dataset`, `person`, `publication`, `software`, `model`, `algorithm` (and potentially more).
+Known type names: `workflow`, `dataset`, `person`, `publication`, `software`, `formula`, `model`, `algorithm` (and potentially more).
 
 ⚠️ `--type` filtering uses `haswbfacet` against P1460 or P31 depending on the type. `--type software` is a special case: it issues three queries (P1460=Q5976450 for SoftwareApplication, P31=Q57080 and P31=Q56605 for SoftwareSourceCode) and merges the results. For other types, items with a missing or different P1460 value will not appear — retry without `--type` to do a fulltext search across all item types.
 
