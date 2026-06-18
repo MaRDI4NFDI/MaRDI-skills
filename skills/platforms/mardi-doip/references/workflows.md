@@ -233,15 +233,24 @@ A **Snakemake** workflow that reproduces the results of Doe et al. (2024).\N\NAl
 mardi-doip-cli --action retrieve --object-id types/ScholarlyArticle
 ```
 
-`propertyMappings` example (abbreviated):
+`propertyMappings` example (ScholarlyArticle, abbreviated):
 
 ```json
 {
-  "author":        {"pid": "P16",  "type": "item",   "multi": true},
-  "datePublished": {"pid": "P28",  "type": "time",   "multi": false},
-  "identifier":    {"pid": "P27",  "type": "string", "multi": false, "note": "DOI"}
+  "author":                 {"pid": "P16",   "type": "item",   "multi": true},
+  "datePublished":          {"pid": "P28",   "type": "time",   "multi": false},
+  "identifier":             {"pid": "P27",   "type": "string", "multi": false, "note": "DOI"},
+  "about":                  {"pid": "P226",  "type": "string", "multi": true,  "note": "MSC codes"},
+  "keywords":               {"pid": "P1450", "type": "string", "multi": true,  "note": "zbMATH keywords"},
+  "identifier/zbmath-de":   {"pid": "P1451", "type": "string", "multi": false},
+  "identifier/zbmath-open": {"pid": "P225",  "type": "string", "multi": false},
+  "arxivId":                {"pid": "P21",   "type": "string", "multi": false},
+  "arXivClassification":    {"pid": "P22",   "type": "string", "multi": false},
+  "relatedLink":            {"pid": "P1643", "type": "item",   "multi": true,  "note": "recommended articles"}
 }
 ```
+
+> **`identifier` in the FDO profile**: when a publication has more than one identifier (DOI, arXiv, zbMATH-DE, zbMATH-Open), `profile["identifier"]` is a JSON array of `PropertyValue` objects. With a single identifier it is a plain object. Consumers should handle both forms.
 
 Then build the UPDATE payload using the P-IDs:
 

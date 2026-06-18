@@ -180,6 +180,34 @@ There is no explicit list command. But, when using search with only the `--type`
 
 ---
 
+## Claims reference for scholarly articles
+
+Triggered by `P31=Q56887`. Full type FDO: `mardi-doip-cli --action retrieve --object-id types/ScholarlyArticle`.
+
+| Property | Datatype | Multi | Notes |
+|----------|----------|-------|-------|
+| `P31` | item | no | always `Q56887` |
+| `P16` | item (QID) | yes | author (person item) |
+| `P43` | string | no | author name string (fallback when no QID) |
+| `P28` | time (ISO 8601) | no | date published |
+| `P27` | string | no | DOI |
+| `P21` | string | no | arXiv preprint ID, e.g. `2606.19284` |
+| `P22` | string | no | arXiv subject classification, e.g. `math.OC` |
+| `P200` | item (QID) | yes | publisher |
+| `P1433` | item (QID) | yes | journal / proceedings (isPartOf) |
+| `P304` | string | no | page range, e.g. `12-34` |
+| `P223` | item (QID) | yes | cited articles |
+| `P1643` | item (QID) | yes | recommended / related articles |
+| `P226` | string | yes | MSC codes, e.g. `65H17` |
+| `P1450` | string | yes | zbMATH keywords |
+| `P1451` | string | no | zbMATH DE number |
+| `P225` | string | no | zbMATH Open document ID |
+| `P275` | item (QID) | yes | license |
+| `P407` | item (QID) | yes | language |
+| `P1448` | string | no | comment |
+
+---
+
 ## Claims reference for persons
 
 | Property | Datatype | Example | Meaning |
