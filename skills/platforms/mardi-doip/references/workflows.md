@@ -259,3 +259,40 @@ mardi-doip-cli --action update --object-id <QID> \
   --username User@BotName --password <pw> \
   --properties '{"claims": {"P28": "2024-01-15"}}'
 ```
+
+---
+
+## 6. Link formulas to a publication
+
+**Goal**: Record which formulas appear in a paper so the publication FDO lists them under `hasPart`.
+
+The link goes on the **publication item** (not the formula). P1560 is used — the same property that Model items use to enumerate their formulas.
+
+```bash
+# Single formula
+mardi-doip-cli --action update --object-id <paper-QID> \
+  --properties '{"claims": {"P1560": "<formula-QID>"}}' \
+  --username DoipBot@DoipBot --password <pw>
+
+# Multiple formulas at once
+mardi-doip-cli --action update --object-id <paper-QID> \
+  --properties '{"claims": {"P1560": ["<QID1>", "<QID2>", "<QID3>"]}, "do_override": true}' \
+  --username DoipBot@DoipBot --password <pw>
+```
+
+After the update the publication FDO will contain:
+
+```json
+"hasPart": [
+  {"@id": "https://portal.mardi4nfdi.de/entity/<QID1>"},
+  {"@id": "https://portal.mardi4nfdi.de/entity/<QID2>"}
+]
+```
+
+**Reverse lookup** — find all papers a formula appears in:
+
+```bash
+mardi-doip-cli --action search --type publication --query "<formula-QID>"
+```
+
+No qualifier on P1560 is needed (unlike Model → Formula, which uses P560 for roles).
