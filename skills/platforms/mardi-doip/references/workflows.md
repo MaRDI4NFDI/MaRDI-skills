@@ -145,24 +145,35 @@ The trigger is `P1460=Q5981696` — this is what causes the FDO server to route 
 
 ### Step 1 — Create the item
 
+For formulas with LaTeX expressions or symbol qualifiers, write the payload to a JSON file and use `--json @file` to avoid shell escaping issues:
+
 ```bash
+cat > /tmp/formula.json << 'ENDJSON'
+{
+  "label": "Euler product formula",
+  "description": "Representation of the Riemann zeta function as a product over primes",
+  "claims": {
+    "P1460": "Q5981696",
+    "P989": "\\zeta(s) = \\prod_{p \\text{ prime}} \\frac{1}{1-p^{-s}}",
+    "P983": [
+      {"value": "\\zeta", "qualifiers": {"P984": "<QID of the concept the symbol represents>"}},
+      {"value": "s",      "qualifiers": {"P984": "<QID of the concept the symbol represents>"}}
+    ],
+    "P558": "<QID of the person the formula is named after, if any>",
+    "P1495": "<QID of the mathematical community, if any>",
+    "P1459": "Long-form description of the formula and its context.",
+    "P12": "<Wikidata QID, e.g. Q187235>",
+    "P2": "<DLMF equation ID, e.g. 25.2.E2 — only if the formula appears in DLMF>"
+  }
+}
+ENDJSON
+
 mardi-doip-cli --action create \
-  --json '{
-    "label": "Euler product formula",
-    "description": "Representation of the Riemann zeta function as a product over primes",
-    "claims": {
-      "P1460": "Q5981696",
-      "P989": "\\zeta(s) = \\prod_{p \\text{ prime}} \\frac{1}{1-p^{-s}}",
-      "P983": "\\zeta",
-      "P558": "<QID of the person the formula is named after, if any>",
-      "P1495": "<QID of the mathematical community, if any>",
-      "P1459": "Long-form description of the formula and its context.",
-      "P12": "<Wikidata QID, e.g. Q187235>",
-      "P2": "<DLMF equation ID, e.g. 25.2.E2 — only if the formula appears in DLMF>"
-    }
-  }' \
+  --json @/tmp/formula.json \
   --username DoipBot@DoipBot --password <pw>
 ```
+
+**P983 symbol format**: each symbol can be a bare string (notation only) or an object `{"value": "...", "qualifiers": {"P984": "<concept-QID>"}}`. P984 links the notation to the KG item representing the concept the symbol stands for. Bare strings and object form can be mixed in the same array.
 
 Full Formula property reference:
 

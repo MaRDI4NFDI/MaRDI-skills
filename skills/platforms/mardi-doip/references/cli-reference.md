@@ -142,6 +142,23 @@ mardi-doip-cli --action create \
 - `description` — optional
 - `claims` — map of bare P-IDs (`P<number>`) to values. Item → QID string; string/external-id → plain string; multi-value → JSON array (e.g. `"P31": ["Q68657", "Q6830884"]`).
 
+**Claim values with qualifiers** — use the object form `{"value": "...", "qualifiers": {"P<n>": "Q<n>"}}`:
+```json
+"P983": [
+  {"value": "y_n",    "qualifiers": {"P984": "Q12345"}},
+  {"value": "u_n",    "qualifiers": {"P984": "Q12346"}}
+]
+```
+Each object in a list can independently carry qualifiers. Bare strings and object form can be mixed in the same array.
+
+**`@file` syntax** — for payloads containing LaTeX or other characters that are awkward to escape in a shell string, write the JSON to a file and prefix the path with `@`:
+```bash
+mardi-doip-cli --action create \
+  --json @/path/to/item.json \
+  --username User@BotName --password <pw>
+```
+`--properties` for the `update` action accepts `@file` the same way.
+
 Response:
 ```json
 [{"operation": "create", "status": "created", "qid": "Q7260359"}]
