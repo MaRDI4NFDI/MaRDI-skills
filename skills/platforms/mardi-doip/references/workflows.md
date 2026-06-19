@@ -2,6 +2,18 @@
 
 ---
 
+## 0. LLM provenance
+
+Before creating or updating any item, ask: **was the content (label, description, claims, symbol descriptions) derived with the help of an LLM?**
+
+If yes, add `P1642: Q7266517` (Claude Sonnet 4.6) as:
+- a **top-level claim** on the item — when the item as a whole was produced by the LLM
+- a **qualifier** on individual claim values — when only specific values (e.g. a P1962 symbol description or a P1459 summary) were LLM-generated
+
+Q7266517 is the MaRDI KG item for Claude Sonnet 4.6. Replace with the appropriate QID if a different model was used.
+
+---
+
 ## 1. Create a workflow item and upload an RO-Crate
 
 **Goal**: Register a new computational workflow in the MaRDI KG and attach its RO-Crate package.
@@ -184,7 +196,6 @@ mardi-doip-cli --action create \
 
 Bare strings and object form can be mixed in the same array. Prefer P1962 for new formula items; add P1642 when the description was produced by an LLM; migrate P1962 → P984 once concept items are created.
 
-**Marking the item itself as AI-generated**: when the formula item is extracted from a publication by an LLM (label, mathExpression, symbol list, descriptions all produced by the model), add `P1642: Q7266517` as a top-level claim on the item — not just as a qualifier on individual values. This signals that the item as a whole was created by the model, not manually curated.
 
 Full Formula property reference:
 
