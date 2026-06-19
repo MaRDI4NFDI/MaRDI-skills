@@ -156,8 +156,8 @@ cat > /tmp/formula.json << 'ENDJSON'
     "P1460": "Q5981696",
     "P989": "\\zeta(s) = \\prod_{p \\text{ prime}} \\frac{1}{1-p^{-s}}",
     "P983": [
-      {"value": "\\zeta", "qualifiers": {"P984": "<QID of the concept the symbol represents>"}},
-      {"value": "s",      "qualifiers": {"P984": "<QID of the concept the symbol represents>"}}
+      {"value": "\\zeta", "qualifiers": {"P1962": "Riemann zeta function"}},
+      {"value": "s",      "qualifiers": {"P1962": "complex variable"}}
     ],
     "P558": "<QID of the person the formula is named after, if any>",
     "P1495": "<QID of the mathematical community, if any>",
@@ -173,7 +173,14 @@ mardi-doip-cli --action create \
   --username DoipBot@DoipBot --password <pw>
 ```
 
-**P983 symbol format**: each symbol can be a bare string (notation only) or an object `{"value": "...", "qualifiers": {"P984": "<concept-QID>"}}`. P984 links the notation to the KG item representing the concept the symbol stands for. Bare strings and object form can be mixed in the same array.
+**P983 symbol format**: each symbol can be a bare string (notation only) or an object with a qualifier describing what it represents. Two qualifier properties are available:
+
+| Qualifier | P-ID | Type | When to use |
+|---|---|---|---|
+| symbol represents (string) | P1962 | string | free-text description when no KG concept item exists yet |
+| symbol represents | P984 | item (QID) | QID of the KG concept item when it exists |
+
+Bare strings and object form can be mixed in the same array. Prefer P1962 for new formula items; migrate to P984 once concept items are created.
 
 Full Formula property reference:
 
@@ -181,7 +188,7 @@ Full Formula property reference:
 |---|---|---|---|---|---|
 | MaRDI profile type | P1460 | item (QID) | no | **yes** — always `Q5981696` |
 | mathExpression | P989 | math string | no | no | generic defining formula; preferred over P14 |
-| symbol | P983 | math string | yes | no | symbol notation; add P984 qualifier (item QID) to indicate what it represents |
+| symbol | P983 | math string | yes | no | symbol notation; add P1962 qualifier (string) or P984 qualifier (item QID) to indicate what it represents |
 | definesSymbol | P3 | item (QID) | yes | no | symbols this formula defines |
 | DLMF equation ID | P2 | string | no | no | e.g. `25.2.E2` — only for DLMF-sourced items |
 | Wikidata QID | P12 | string | no | no | e.g. `Q187235` |
@@ -202,8 +209,8 @@ cat > /tmp/formula_update.json << 'ENDJSON'
 {
   "claims": {
     "P983": [
-      {"value": "\\zeta", "qualifiers": {"P984": "<concept-QID>"}},
-      {"value": "s",      "qualifiers": {"P984": "<concept-QID>"}}
+      {"value": "\\zeta", "qualifiers": {"P1962": "Riemann zeta function"}},
+      {"value": "s",      "qualifiers": {"P1962": "complex variable"}}
     ]
   },
   "do_override": true

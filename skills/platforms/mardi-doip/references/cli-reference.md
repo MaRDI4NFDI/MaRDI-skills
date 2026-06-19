@@ -147,13 +147,17 @@ mardi-doip-cli --action create \
 - `description` — optional
 - `claims` — map of bare P-IDs (`P<number>`) to values. Item → QID string; string/external-id → plain string; multi-value → JSON array (e.g. `"P31": ["Q68657", "Q6830884"]`).
 
-**Claim values with qualifiers** — use the object form `{"value": "...", "qualifiers": {"P<n>": "Q<n>"}}`:
+**Claim values with qualifiers** — use the object form `{"value": "...", "qualifiers": {"P<n>": "<value>"}}`:
 ```json
 "P983": [
-  {"value": "y_n",    "qualifiers": {"P984": "Q12345"}},
-  {"value": "u_n",    "qualifiers": {"P984": "Q12346"}}
+  {"value": "y_n",    "qualifiers": {"P1962": "output sequence value at step n"}},
+  {"value": "u_n",    "qualifiers": {"P1962": "control input at step n"}}
 ]
 ```
+Qualifier values can be strings or QIDs depending on the qualifier property's datatype. For P983 symbol notation:
+- **P1962** (`symbol represents (string)`) — free-text description of what the symbol means; use when no KG concept item exists yet
+- **P984** (`symbol represents`) — QID of the KG item representing the concept; use when the concept item exists
+
 Each object in a list can independently carry qualifiers. Bare strings and object form can be mixed in the same array.
 
 **`@file` syntax** — for payloads containing LaTeX or other characters that are awkward to escape in a shell string, write the JSON to a file and prefix the path with `@`:
