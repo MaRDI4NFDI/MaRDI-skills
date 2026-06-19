@@ -193,7 +193,7 @@ mardi-doip-cli --action create \
 | symbol represents (string) | P1962 | string | free-text description when no KG concept item exists yet |
 | symbol represents | P984 | item (QID) | QID of the KG concept item when it exists |
 
-Bare strings and object form can be mixed in the same array. Prefer P1962 for new formula items; migrate P1962 → P984 once concept items are created. LLM provenance is covered by the item-level P1642 claim (see §0) — no need to repeat it as a qualifier on individual symbols.
+Bare strings and object form can be mixed in the same array. Default to P1962 for new formula items. Use P984 only when the symbol is a well-known concept that is likely already in the KG — see **Step 1a** below. LLM provenance is covered by the item-level P1642 claim (see §0) — no need to repeat it as a qualifier on individual symbols.
 
 
 Full Formula property reference:
@@ -213,6 +213,28 @@ Full Formula property reference:
 | description_long | P1459 | string | no | no | extended description, supports Markdown (see § 4) |
 
 Note the returned `qid` — use it to verify and enrich the item.
+
+### Step 1a — Search for symbol concept items (optional)
+
+**Ask the user first.** This step is not standard — only perform it when the user explicitly wants to link symbols to existing KG concept items (e.g. because the formula uses well-known objects like the Hamiltonian operator, the Laplacian, or the Dirac delta function). For routine formula creation, P1962 free-text qualifiers are sufficient.
+
+If the user says yes, search for each symbol before writing the JSON payload:
+
+```bash
+# Search without --type to find concept items of any kind (quantities, operators, etc.)
+mardi-doip-cli --action search --query "Hamiltonian operator" --no-banner
+```
+
+Check the first result's snippet to confirm it is the right concept. If a matching item is found, replace the P1962 qualifier for that symbol with a P984 qualifier using the QID:
+
+```json
+"P983": [
+  {"value": "\\hat{H}", "qualifiers": {"P984": "Q6534301"}},
+  {"value": "\\psi",    "qualifiers": {"P1962": "wave function"}}
+]
+```
+
+If no KG item is found for a symbol, fall back to P1962. Mixed arrays (some P984, some P1962) are fine — use whatever is available per symbol.
 
 ### Step 2 — Update symbol qualifiers on an existing item (optional)
 
