@@ -7,36 +7,25 @@ description: Operate the mardi-doip-cli to interact with the MaRDI DOIP server a
 
 You are operating `mardi-doip-cli`, a binary client for the MaRDI DOIP server.
 
-Read `references/cli-reference.md` before running any command — it has the full action reference, critical gotchas, and known wrong behaviour to avoid.
+Read `references/cli-reference.md` before running any command — full action reference, critical gotchas, and known wrong behaviour.
 
-Read `references/workflows.md` when the user asks for a multi-step task (label-sync, create+upload, type-FDO-then-update).
+Read `references/workflows.md` before any `create` or `update` operation — it lists required fields per item type and common multi-step patterns. Missing a required claim (e.g. `P1460`) silently breaks FDO routing and is hard to detect after the fact.
 
 ## Locating the binary
 
-Run `which mardi-doip-cli` first. If not found or on PATH, ask the user where the binary is before proceeding. Suggest to download it from https://github.com/MaRDI4NFDI/mardi_doip_server/releases .
+Run `which mardi-doip-cli` first. If not found, ask the user where the binary is. Suggest downloading from https://github.com/MaRDI4NFDI/mardi_doip_server/releases.
 
 ## Credentials
 
-Write operations (`update`, `create`) require MediaWiki bot credentials.
+Write operations require MediaWiki bot credentials. Check `$DOIP_USERNAME` / `$DOIP_PASSWORD` first — if set, use silently. Otherwise ask: *"Which bot account and password? (Or set DOIP_USERNAME / DOIP_PASSWORD to avoid being asked.)"* Pass via `--username` / `--password`; never echo passwords. The username is a plain bot name (e.g. `DoipBot`), not `User@BotName` format.
 
-1. Check `$DOIP_USERNAME` and `$DOIP_PASSWORD` — if both are set, use them silently.
-2. If either is missing, ask: *"Which bot account should I use, and can you provide the password? (Or set DOIP_USERNAME / DOIP_PASSWORD in the environment to avoid being asked.)"*
-3. Never log or echo passwords in command output. Pass them via `--username` / `--password` flags.
-4. The designated service account for automated writes is `DoipBot@DoipBot`.
+## Plan-then-confirm
 
-## Plan-then-confirm approach
+Before each command, state what you'll do, show the exact command, and note irreversible effects. Wait for confirmation. For multi-step workflows, show the full plan upfront, then confirm each step as you reach it.
 
-Before running any command, state:
-- What you are about to do and why
-- The exact command with all arguments filled in
-- Any irreversible side-effects (note: `purge` only evicts cache — it does NOT delete data)
+## Output
 
-Wait for the user to confirm before executing. For multi-step workflows, show the full plan upfront, then confirm each step individually as you reach it.
-
-## Handling output
-
-- Metadata responses are JSON — summarise the relevant fields rather than dumping the full blob.
-- Component downloads write to a file; report the path and size when done.
-- Search results: show `qid`, `title`, and `snippet` in a table.
-- On error, quote the error message verbatim and suggest the likely cause (auth failure, wrong QID format, component not found, conflict on update).
-- Use `--no-banner` whenever the output will be piped or parsed — it suppresses the ASCII banner and all log lines so only raw JSON reaches stdout.
+- JSON responses: summarise key fields, don't dump the blob.
+- Search results: `qid`, `title`, `snippet` in a table.
+- Errors: quote verbatim, suggest likely cause.
+- Always use `--no-banner` when piping or parsing output.
