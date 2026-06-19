@@ -298,7 +298,55 @@ A **Snakemake** workflow that reproduces the results of Doe et al. (2024).\N\NAl
 
 ---
 
-## 5. Type FDO lookup before UPDATE
+## 5. Create a publication item
+
+**Goal**: Register a scholarly article in the MaRDI KG.
+
+Both `P31=Q56887` and `P1460=Q5976449` are **required** for the item to be recognised as a MaRDI publication. All other claims are optional.
+
+```bash
+mardi-doip-cli --action create \
+  --json '{
+    "label": "Title of the paper",
+    "claims": {
+      "P31": "Q56887",
+      "P1460": "Q5976449",
+      "P21": "<arXiv ID, e.g. 2212.00168>",
+      "P27": "<DOI>",
+      "P43": "<author name string — use if no MaRDI person QID is known>",
+      "P16": "<author QID — preferred over P43 when available>",
+      "P28": "<date published, ISO 8601>",
+      "P1450": ["<keyword1>", "<keyword2>"],
+      "P1642": "Q7266517"
+    }
+  }' \
+  --username DoipBot --password <pw>
+```
+
+Full publication property reference:
+
+| Field | P-ID | Type | Multi | Required |
+|---|---|---|---|---|
+| instance of | P31 | item (QID) | no | yes — always `Q56887` |
+| MaRDI profile type | P1460 | item (QID) | no | yes — always `Q5976449` |
+| arXiv ID | P21 | string | no | no |
+| DOI | P27 | string | no | no |
+| author name string | P43 | string | no | one of P16/P43 |
+| author | P16 | item (QID) | yes | one of P16/P43 |
+| date published | P28 | time (ISO 8601) | no | no |
+| arXiv subject classification | P22 | string | no | no |
+| zbMATH keywords | P1450 | string | yes | no |
+| journal / proceedings | P1433 | item (QID) | yes | no |
+| publisher | P200 | item (QID) | yes | no |
+| MSC codes | P226 | string | yes | no |
+| license | P275 | item (QID) | yes | no |
+| cited articles | P223 | item (QID) | yes | no |
+| contains (formula/theorem) | P1560 | item (QID) | yes | no |
+| LLM provenance | P1642 | item (QID) | no | if AI-assisted |
+
+---
+
+## 6. Type FDO lookup before UPDATE
 
 **Why**: The UPDATE handler expects bare Wikibase P-IDs as property keys (e.g. `{"P28": "2024-01-15"}`), not Schema.org names. Retrieve the type FDO first to get the correct P-IDs.
 

@@ -216,11 +216,12 @@ There is no explicit list command. But, when using search with only the `--type`
 
 ## Claims reference for scholarly articles
 
-Triggered by `P31=Q56887`. Full type FDO: `mardi-doip-cli --action retrieve --object-id types/ScholarlyArticle`.
+Triggered by `P31=Q56887` **and** `P1460=Q5976449` — both are required for the item to be recognised as a MaRDI publication. Full type FDO: `mardi-doip-cli --action retrieve --object-id types/ScholarlyArticle`.
 
 | Property | Datatype | Multi | Notes |
 |----------|----------|-------|-------|
-| `P31` | item | no | always `Q56887` |
+| `P31` | item | no | always `Q56887` — **required** |
+| `P1460` | item | no | always `Q5976449` — **required** |
 | `P16` | item (QID) | yes | author (person item) |
 | `P43` | string | no | author name string (fallback when no QID) |
 | `P28` | time (ISO 8601) | no | date published |
