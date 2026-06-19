@@ -167,6 +167,11 @@ Multiple qualifiers can be combined on a single value. When a description was ge
 ```
 **Q7266517** is the KG item for Claude Sonnet 4.6. P1642 is also used on P1638/P1639 (summaries) to mark AI-generated text.
 
+**Marking the item itself as AI-generated**: when an entire item is extracted or created by an LLM, add `P1642: Q7266517` as a top-level claim (not just as a qualifier on individual values):
+```json
+{"label": "...", "claims": {"P1460": "Q5981696", "P1642": "Q7266517", "P983": [...]}}
+```
+
 Each object in a list can independently carry qualifiers. Bare strings and object form can be mixed in the same array.
 
 **`@file` syntax** — for payloads containing LaTeX or other characters that are awkward to escape in a shell string, write the JSON to a file and prefix the path with `@`:
