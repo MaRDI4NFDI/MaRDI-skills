@@ -8,6 +8,8 @@ Before creating or updating any item, ask: **was the content (label, description
 
 If yes, add `P1642: Q7266517` (Claude Sonnet 4.6) as a **top-level claim** on the item. This one claim covers the entire item — there is no need to repeat P1642 as a qualifier on individual claim values. Setting it once at the item level signals that the item as a whole was produced by the LLM.
 
+If only specific claim values were LLM-generated (e.g. a P1962 symbol description or a P1459 summary added later to an otherwise manually curated item), add P1642 as a **qualifier on those individual values** instead of at the item level.
+
 Q7266517 is the MaRDI KG item for Claude Sonnet 4.6. Replace with the appropriate QID if a different model was used.
 
 ---
