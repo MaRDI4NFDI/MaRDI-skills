@@ -1,5 +1,5 @@
 ---
-name: wikidata-query
+name: mardi-kg-query
 description: Answer factual questions about people, places, organizations, events, creative works, awards, and other real-world entities by querying Wikidata's knowledge base. Use for biographical info, geographic data, historical facts, lists, counts, and relationships between entities - even when users don't mention Wikidata.
 license: MIT
 compatibility: opencode
@@ -9,7 +9,7 @@ metadata:
   data-source: wikidata
 ---
 
-# Skill: wikidata-query
+# Skill: mardi-kg-query
 
 ## What I do
 
