@@ -1,114 +1,334 @@
 ---
-name: mardi-kg-query
-description: Query the MaRDI Knowledge Graph and Portal (Mathematical Research Data Initiative). Use when the user wants to find mathematical software, models, formulas, datasets, or publications, resolve Portal Q-IDs, or run SPARQL against MaRDI or its linked sources (swMATH, zbMATH, arXiv, CRAN, MathModDB) — even when they don't say "MaRDI" and only name a linked source. Read-only.
+name: wikidata-query
+description: Answer factual questions about people, places, organizations, events, creative works, awards, and other real-world entities by querying Wikidata's knowledge base. Use for biographical info, geographic data, historical facts, lists, counts, and relationships between entities - even when users don't mention Wikidata.
+license: MIT
+compatibility: opencode
+metadata:
+  endpoint: https://query.wikidata.org/sparql
+  query-gui: https://query.wikidata.org
+  data-source: wikidata
 ---
 
-# MaRDI Knowledge Graph — read-only CLI
+# Skill: wikidata-query
 
-The MaRDI portal is a Wikibase instance (same stack as Wikidata) holding ~5M items and ~500M relationships across mathematical research data sources (DLMF, swMATH, zbMATH Open, arXiv, CRAN, PolyDB, OpenML, …). Anyone can query it without authentication.
+## What I do
 
-This skill drives `wikibase-cli` against MaRDI's endpoints. Stay strictly read-only — writes are deliberately out of scope.
+- Query Wikidata using SPARQL to retrieve facts about entities
+- Construct SPARQL queries for specific data retrieval needs
+- Format and present Wikidata query results in a readable way
+- Help users explore relationships between Wikidata entities
+- Provide example queries for common use cases
+- Explain query results and Wikidata entity structure
 
-## Endpoints
+## When to use me
 
-| What | URL |
-|---|---|
-| MediaWiki API (entity lookup, search) | `https://portal.mardi4nfdi.de/w/api.php` |
-| SPARQL query service | `https://query.portal.mardi4nfdi.de/sparql` |
-| Entity URI base (in SPARQL results) | `https://portal.mardi4nfdi.de/entity/Q<id>` |
-| Human-readable item page | `https://portal.mardi4nfdi.de/wiki/Item:Q<id>` |
+**Use this skill proactively** whenever the user asks factual questions that could be answered by querying structured knowledge, even if they don't mention Wikidata.
 
-## Prerequisites
+Trigger this skill when the user asks about:
 
-`wikibase-cli` provides the `wb` binary. Check first; install only if missing:
+### Biographical information
+- "Who was [person]?" - basic info about historical or notable people
+- "When was [person] born/died?"
+- "Where was [person] from?"
+- "What did [person] do?" - occupation, achievements
+- "List [occupation] from [country/time period]"
+- Examples: "Who was Ada Lovelace?", "List French painters from the 19th century"
 
-```sh
-wb --version || npm install -g wikibase-cli
-```
+### Geographic and location data
+- "What cities are in [country/region]?"
+- "Where is [place] located?"
+- "What is the population of [city]?"
+- "List [type of place] in [location]"
+- Examples: "What cities are in Germany?", "List universities in Paris"
 
-## Configure for MaRDI — use env vars, not `wb config`
+### Organizations and institutions
+- "What universities are in [location]?"
+- "List [type of organization]"
+- Examples: "What museums are in London?", "List space agencies"
 
-Set these for the current shell:
+### Creative works and cultural artifacts
+- "What books did [author] write?"
+- "What movies did [director] make?"
+- "List films from [year/country]"
+- Examples: "What books did Jane Austen write?", "List Pixar movies"
 
-```sh
-export WB_INSTANCE=https://portal.mardi4nfdi.de/w/api.php
-export WB_SPARQL_ENDPOINT=https://query.portal.mardi4nfdi.de/sparql
-```
+### Awards and achievements
+- "Who won [award] in [year/category]?"
+- "List [award] winners"
+- Examples: "Who won the Nobel Prize in Physics in 2020?", "List Academy Award winners for Best Picture"
 
-**Why not `wb config instance …`?** That command mutates the user's persistent CLI config and would silently redirect any *other* Wikibase work they do (Wikidata, a private instance) to MaRDI. Env vars are scoped to the shell, take priority over persistent config, and leave no side effects when the session ends. Only fall back to `--instance …` / `--sparql-endpoint …` per-command flags if env vars aren't viable.
+### Scientific and technical information
+- "What programming languages are there?"
+- "List [chemical elements/planets/etc.]"
+- "What are the properties of [scientific entity]?"
+- Examples: "List programming languages created after 2000", "What moons does Jupiter have?"
 
-If the user already has `wb` pointed at MaRDI, you can skip this step.
+### Historical events and dates
+- "When did [event] happen?"
+- "What happened in [year/period]?"
+- Examples: "When did World War II end?", "When was the Eiffel Tower built?"
 
-## Common commands
+### Relationships and connections
+- "How are [entity A] and [entity B] related?"
+- "What is the relationship between [entity A] and [entity B]?"
+- Examples: "Who were the students of Albert Einstein?", "What companies did Steve Jobs found?"
 
-Search by label (free-text):
+### Counting and statistics
+- "How many [type] are there in [category/location]?"
+- "How many [items] [meet criteria]?"
+- Examples: "How many countries are in Europe?", "How many Nobel Prize winners are from France?"
 
-```sh
-wb search "Riemann zeta"            # default lang en, type item
-wb search --type property "cites"   # search properties
-```
+### General factual queries
+- Any question starting with: "Who", "What", "When", "Where", "How many", "List", "Find"
+- Questions about real-world entities, people, places, organizations, works, events
+- Questions seeking verifiable, structured facts
 
-Fetch raw entity data (single Q-id or several):
+**Important:** Use this skill even when:
+- The user doesn't mention "Wikidata" or "SPARQL"
+- The user doesn't know Wikidata exists
+- The question seems simple - Wikidata often has comprehensive data
+- You're unsure if the data exists - try querying and handle no results gracefully
 
-```sh
-wb data Q1089 --simplify            # cleaner JSON
-wb data Q1089 --props labels,descriptions,claims
-```
+**Don't use this skill for:**
+- Opinion-based questions
+- Current real-time data (stock prices, weather, current news)
+- Questions about code, programming problems, or technical debugging
+- Hypothetical scenarios
+- Questions about the user's personal data or local files
 
-List claims for an entity (all, or one property):
+## Best practices I follow
 
-```sh
-wb claims Q1089                     # every claim
-wb claims Q1089 P31                 # only "instance of" claims
-```
+### 1. Use the Wikidata SPARQL endpoint
 
-Run SPARQL — inline string, file, or with format flag:
+The primary endpoint for querying Wikidata is:
+- **SPARQL Endpoint**: `https://query.wikidata.org/sparql`
+- **Query GUI**: `https://query.wikidata.org/` (for testing and exploration)
 
-```sh
-wb sparql 'SELECT * WHERE { ?s ?p ?o } LIMIT 5'
-wb sparql ./query.rq --format table
-wb sparql ./query.rq --format csv > results.csv
-```
+Make HTTP GET requests with the query parameter `?query={SPARQL}` and use the header `Accept: application/sparql-results+json` to get JSON results.
 
-Discover the property catalogue (you will need this — MaRDI has its own P-numbers, not Wikidata's):
+### 2. Construct efficient SPARQL queries
 
-```sh
-wb props | jq                       # full property list with labels
-wb props | jq 'to_entries | map(select(.value | test("cites"; "i"))) | from_entries'
-```
-
-## SPARQL prefixes
-
-Wikidata-style prefixes work because MaRDI runs the same Wikibase Query Service:
-
+**Basic query structure:**
 ```sparql
-PREFIX wd:       <https://portal.mardi4nfdi.de/entity/>
-PREFIX wdt:      <https://portal.mardi4nfdi.de/prop/direct/>
-PREFIX wikibase: <http://wikiba.se/ontology#>
-PREFIX bd:       <http://www.bigdata.com/rdf#>
-PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?item ?itemLabel ?property
+WHERE {
+  ?item wdt:P31 wd:Q5 .           # instance of (P31) human (Q5)
+  ?item wdt:P106 wd:Q901 .         # occupation (P106) scientist (Q901)
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+LIMIT 10
 ```
 
-`wb sparql` injects sensible defaults, but inline queries that travel outside `wb` (e.g. via `curl`) need them.
+**Key SPARQL patterns for Wikidata:**
+- Use `wd:` prefix for entities (e.g., `wd:Q5` = human)
+- Use `wdt:` prefix for direct property values (e.g., `wdt:P31` = instance of)
+- Use `wikibase:label` service to get human-readable labels
+- Always include a `LIMIT` clause to prevent overwhelming results
+- Use `OPTIONAL` blocks for properties that may not exist
 
-## Read-only contract
+### 3. Common Wikidata properties to know
 
-Decline write requests (creating items, editing labels, adding claims, deleting). Tell the user this skill is read-only and point them at the Wikibase write API + an authenticated tool if they need it. Do not attempt writes via `curl` either.
+- `P31` - instance of (type/class)
+- `P279` - subclass of
+- `P106` - occupation
+- `P27` - country of citizenship
+- `P569` - date of birth
+- `P570` - date of death
+- `P19` - place of birth
+- `P20` - place of death
+- `P54` - member of sports team
+- `P580` - start time
+- `P582` - end time
 
-## Example queries
+Find more properties at: https://www.wikidata.org/wiki/Wikidata:List_of_properties
 
-Canonical SPARQL templates live in `references/queries.md`. Read that file when the user's request maps to one of:
-- find items by label / partial match
-- look up MaRDI items linked to an external ID (zbMATH, arXiv, swMATH, CRAN…)
-- list items of a given class / "instance of" type
-- count items by category
-- explore an unfamiliar property's usage
-- query MathModDB content (mathematical models, formulas, quantities, computational tasks) — see `references/mathmoddb.md`
+### 4. Handle query results appropriately
 
-If a query template references a property by name (e.g. "instance of"), resolve the actual `P<n>` for MaRDI via `wb props` before running — MaRDI's IDs do not match Wikidata's.
+When presenting results:
+- Extract the most relevant information from the JSON response
+- Format dates and values in a human-readable way
+- Show entity labels (human-readable names) rather than Q-IDs when possible
+- Limit the number of results shown to avoid overwhelming the user
+- Provide a link to the query GUI for further exploration
 
-## When something goes wrong
+### 5. Provide query explanations
 
-- `wb` returns empty results → re-check `WB_SPARQL_ENDPOINT` is set; check the property ID exists in MaRDI (`wb props`).
-- HTTP 4xx from SPARQL → the URL path matters: it's `/sparql`, not the Wikidata-style `/proxy/wdqs/bigdata/namespace/wdq/sparql`.
-- Slow queries → MaRDI's endpoint has a query timeout. Add `LIMIT`, narrow the predicate, or bind a specific subject before fanning out.
+When showing a query or results:
+- Explain what the query is searching for
+- Clarify any Wikidata-specific terminology (Q-IDs, P-IDs)
+- Mention any limitations of the query
+- Suggest how the query could be modified for different results
+
+## Questions to ask
+
+When the user request is ambiguous, ask:
+
+1. **What specific information are you looking for?** (e.g., dates, locations, relationships, counts)
+2. **Do you need all results or just a sample?** (affects LIMIT clause)
+3. **Are you interested in a specific time period or location?** (helps filter results)
+4. **Do you want additional related information?** (e.g., dates, descriptions, images)
+5. **Should results be ordered in any particular way?** (e.g., by date, alphabetically)
+
+## Example workflows
+
+### Example 1: Finding information about a person
+
+**User:** "Who was Ada Lovelace?"
+
+**Workflow:**
+1. Construct a SPARQL query to find Ada Lovelace's entity and basic information
+2. Query for properties like birth date, death date, occupation, notable work
+3. Execute the query against the Wikidata endpoint
+4. Present the results in a clear, readable format
+
+**Query:**
+```sparql
+SELECT ?property ?propertyLabel ?value ?valueLabel
+WHERE {
+  wd:Q7259 ?p ?value .
+  ?property wikibase:directClaim ?p .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+LIMIT 20
+```
+
+### Example 2: Finding entities by criteria
+
+**User:** "List Nobel Prize winners in Physics from France"
+
+**Workflow:**
+1. Identify the relevant Wikidata items: Nobel Prize in Physics (Q38104), France (Q142)
+2. Construct query filtering by award received and country
+3. Request names and award years
+4. Execute and present sorted results
+
+**Query:**
+```sparql
+SELECT ?person ?personLabel ?year
+WHERE {
+  ?person wdt:P31 wd:Q5 .                    # instance of human
+  ?person wdt:P27 wd:Q142 .                  # country of citizenship: France
+  ?person p:P166 ?award_statement .          # award received
+  ?award_statement ps:P166 wd:Q38104 .       # Nobel Prize in Physics
+  ?award_statement pq:P585 ?year .           # point in time
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ?year
+```
+
+### Example 3: Counting and statistics
+
+**User:** "How many cities are in Germany?"
+
+**Workflow:**
+1. Construct a COUNT query for cities in Germany
+2. Use the appropriate properties for "instance of city" and "country: Germany"
+3. Execute and return the count
+
+**Query:**
+```sparql
+SELECT (COUNT(?city) AS ?count)
+WHERE {
+  ?city wdt:P31 wd:Q515 .       # instance of city
+  ?city wdt:P17 wd:Q183 .       # country: Germany
+}
+```
+
+## Common patterns and templates
+
+### Find all instances of a type
+```sparql
+SELECT ?item ?itemLabel
+WHERE {
+  ?item wdt:P31 wd:Q_TYPE .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+LIMIT 100
+```
+
+### Find entities with a specific property
+```sparql
+SELECT ?item ?itemLabel ?value ?valueLabel
+WHERE {
+  ?item wdt:P_PROPERTY wd:Q_VALUE .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+LIMIT 100
+```
+
+### Find entities with dates
+```sparql
+SELECT ?item ?itemLabel ?date
+WHERE {
+  ?item wdt:P31 wd:Q_TYPE .
+  ?item wdt:P_DATE_PROPERTY ?date .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ?date
+LIMIT 100
+```
+
+### Find entities in a geographic location
+```sparql
+SELECT ?item ?itemLabel ?location
+WHERE {
+  ?item wdt:P31 wd:Q_TYPE .
+  ?item wdt:P17 wd:Q_COUNTRY .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+LIMIT 100
+```
+
+## Execution approach
+
+When querying Wikidata:
+
+1. **Use the Bash tool with curl** to make HTTP requests:
+```bash
+curl -G "https://query.wikidata.org/sparql" \
+  --data-urlencode "query=SELECT ..." \
+  -H "Accept: application/sparql-results+json"
+```
+
+2. **Parse the JSON response** to extract relevant fields from `results.bindings`
+
+3. **Present results clearly** with proper formatting and context
+
+## Troubleshooting
+
+**Query timeout:**
+- Reduce the scope of the query
+- Add more specific filters
+- Reduce the LIMIT or use OFFSET for pagination
+
+**No results returned:**
+- Verify Q-IDs and P-IDs are correct
+- Check if the property exists for those entities
+- Try making constraints OPTIONAL
+
+**Too many results:**
+- Add more filters to narrow down results
+- Reduce LIMIT clause
+- Add ORDER BY to get most relevant results first
+
+**Entity IDs unknown:**
+- Use the Wikidata search: https://www.wikidata.org/
+- Search for the entity name and copy its Q-ID
+- Look up properties at: https://www.wikidata.org/wiki/Wikidata:List_of_properties
+
+## Validation
+
+After executing a query:
+- Verify the results make sense given the query
+- Check if the number of results is reasonable
+- Ensure labels are displaying correctly (not just Q-IDs)
+- Confirm dates and values are formatted properly
+
+## Resources
+
+- **Query GUI**: https://query.wikidata.org/
+- **SPARQL Tutorial**: https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial
+- **Query Examples**: https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples
+- **Property List**: https://www.wikidata.org/wiki/Wikidata:List_of_properties
+- **Main SPARQL Endpoint**: https://query.wikidata.org/sparql
+- **SPARQL 1.1 Spec**: https://www.w3.org/TR/sparql11-overview/
