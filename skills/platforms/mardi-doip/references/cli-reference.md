@@ -4,7 +4,7 @@
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--host` | `doip.portal.mardi4nfdi.org` | Server hostname |
+| `--host` | `doip.portal.mardi4nfdi.de` | Server hostname |
 | `--port` | `3567` | Server port |
 | `--no-tls` | off | Disable TLS (use for local dev) |
 | `--secure` | off | Verify TLS certificate (only for non-self-signed certs) |
@@ -240,6 +240,60 @@ Triggered by `P31=Q56887` **and** `P1460=Q5976449` — both are required for the
 | `P275` | item (QID) | yes | license |
 | `P407` | item (QID) | yes | language |
 | `P1448` | string | no | comment |
+
+---
+
+## Claims reference for datasets
+
+`P1460=Q5984635` ("MaRDI dataset profile") is required. `P31` varies by dataset origin: `Q56885` (data set, bulk of items — OpenML imports), `Q161010` (polyDB collection), `Q6230812` (Jupyter Notebook), `Q6480313` (open data).
+
+| Property | Datatype | Multi | Notes |
+|----------|----------|-------|-------|
+| `P31` | item | no | `Q56885` (data set), `Q161010` (polyDB collection), `Q6230812` (Jupyter Notebook), or `Q6480313` (open data) — **required** |
+| `P1460` | item | no | always `Q5984635` — **required** |
+| `P16` | item (QID) | yes | author (person item) |
+| `P43` | string | yes | author name string (fallback when no QID) |
+| `P1383` | item (QID) | yes | contributed by (person item) |
+| `P19` | item (QID) | yes | maintained by (person item) |
+| `P1459` | string | no | long description (Markdown, see workflows §4) |
+| `P205` | url | no | full work available at URL (download link) |
+| `P1275` | url | no | external data available at URL |
+| `P339` | url | no | source code repository |
+| `P1454` | external-id | no | Software Heritage ID |
+| `P223` | item (QID) | yes | cites work |
+| `P204` | item (QID) | no | file format |
+| `P1437` | external-id | no | polyDB ID (polyDB collections only) |
+| `P1473` | external-id | no | OpenML dataset ID (OpenML imports only) |
+| `P1474` | string | no | dataset version identifier |
+| `P1475` | string | no | collection date |
+| `P1476` | time | no | upload date |
+| `P1477` | string | no | default target attribute |
+| `P1467` | string | no | checksum |
+| `P1481` | quantity | no | number of binary features |
+| `P1482` | quantity | no | number of classes |
+| `P1483` | quantity | no | number of features |
+| `P1484` | quantity | no | number of instances |
+| `P1485` | quantity | no | number of instances with missing values |
+| `P1486` | quantity | no | number of missing values |
+| `P1487` | quantity | no | number of numeric features |
+| `P1488` | quantity | no | number of symbolic features |
+
+---
+
+## Claims reference for research themes
+
+`P31=Q7266523` ("research theme") is required. The English item description carries the human-readable theme description. Used by the topic-overviews pipeline to harvest and classify papers.
+
+| Property | Datatype | Multi | Notes |
+|----------|----------|-------|-------|
+| `P31` | item | no | always `Q7266523` — **required** |
+| `P19` | item (QID) | no | maintained by — set to `Q7270033` (Prefect Research Theme Updater) to include this theme in automated update runs; absence = skip |
+| `P265` | item (QID) | yes | linked publication items (has part) |
+| `P1965` | string | no | arXiv API search query for harvesting papers |
+| `P1967` | string | no | OpenAlex API search query for harvesting papers |
+| `P1979` | string | no | zbMATH search query for harvesting papers |
+| `P1968` | string | no | harvest window in days |
+| `P1990` | string | yes | auto-classify keywords — exact-match phrases that bypass LLM review; one value per keyword |
 
 ---
 
